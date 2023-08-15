@@ -115,9 +115,9 @@ function showFatalStartupError(){
         $('#loadingContainer').fadeOut(250, () => {
             document.getElementById('overlayContainer').style.background = 'none'
             setOverlayContent(
-                'Fatal Error: Unable to Load Distribution Index',
-                'A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application.',
-                'Close'
+                'Errore di Connessione: Server non Raggiungibile',
+                'Al momento risulta impossibile effettuare una connessione ai nostri server e non è stata trovata nessuna configurazione locale. <br><br>Controlla la tua connessione a internet e riavvia il launcher, o riprova piu tardi. Se hai bisogno di assistenza entra su discord.strangemc.it.',
+                'Chiudi'
             )
             setOverlayHandler(() => {
                 const window = remote.getCurrentWindow()

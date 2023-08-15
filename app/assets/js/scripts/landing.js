@@ -102,7 +102,7 @@ function setLaunchEnabled(val){
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
-    loggerLanding.info('Launching game..')
+    loggerLanding.info('Avvio gioco..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
         const jExe = ConfigManager.getJavaExecutable(ConfigManager.getSelectedServer())
@@ -145,7 +145,7 @@ document.getElementById('avatarOverlay').onclick = async e => {
 
 // Bind selected account
 function updateSelectedAccount(authUser){
-    let username = 'No Account Selected'
+    let username = 'Nessun Account Selezionato'
     if(authUser != null){
         if(authUser.displayName != null){
             username = authUser.displayName
@@ -165,14 +165,14 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.rawServer.name : 'No Server Selected')
+    server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.rawServer.name : 'Nessun Server Selezionato')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
 }
 // Real text is set in uibinder.js on distributionIndexDone.
-server_selection_button.innerHTML = '\u2022 Loading..'
+server_selection_button.innerHTML = '\u2022 Caricamento..'
 server_selection_button.onclick = async e => {
     e.target.blur()
     await toggleServerSelection(true)
@@ -180,7 +180,7 @@ server_selection_button.onclick = async e => {
 
 // Update Mojang Status Color
 const refreshMojangStatuses = async function(){
-    loggerLanding.info('Refreshing Mojang Statuses..')
+    loggerLanding.info('Caricamento Stato Mojang..')
 
     let status = 'grey'
     let tooltipEssentialHTML = ''
@@ -191,7 +191,7 @@ const refreshMojangStatuses = async function(){
     if(response.responseStatus === RestResponseStatus.SUCCESS) {
         statuses = response.data
     } else {
-        loggerLanding.warn('Unable to refresh Mojang service status.')
+        loggerLanding.warn('Stato server mojang non disponibile.')
         statuses = MojangRestAPI.getDefaultStatuses()
     }
     
@@ -250,7 +250,7 @@ const refreshServerStatus = async (fade = false) => {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
-        pLabel = 'PLAYERS'
+        pLabel = 'StrangeMC'
         pVal = servStat.players.online + '/' + servStat.players.max
 
     } catch (err) {
@@ -317,13 +317,13 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
         // If the result is null, no valid Java installation was found.
         // Show this information to the user.
         setOverlayContent(
-            'No Compatible<br>Java Installation Found',
-            `In order to join WesterosCraft, you need a 64-bit installation of Java ${effectiveJavaOptions.suggestedMajor}. Would you like us to install a copy?`,
-            'Install Java',
-            'Install Manually'
+            'Nessuna Versione Di<br>Java Compatibile Trovata',
+            `Per poter avviare Minecraft, hai bisogno di installare Java ${effectiveJavaOptions.suggestedMajor}. Vuoi installarla adesso?`,
+            'Installa Java',
+            'Installa Manualmente'
         )
         setOverlayHandler(() => {
-            setLaunchDetails('Preparing Java Download..')
+            setLaunchDetails('Installazione Java..')
             toggleOverlay(false)
             
             try {
@@ -337,10 +337,10 @@ async function asyncSystemScan(effectiveJavaOptions, launchAfter = true){
             $('#overlayContent').fadeOut(250, () => {
                 //$('#overlayDismiss').toggle(false)
                 setOverlayContent(
-                    'Java is Required<br>to Launch',
-                    `A valid x64 installation of Java ${effectiveJavaOptions.suggestedMajor} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.`,
-                    'I Understand',
-                    'Go Back'
+                    'Java è necessario<br>per l\'avvio',
+                    `Per favore, installa Java ${effectiveJavaOptions.suggestedMajor} per continuare.<br><br>Se non riesci ad installarlo, entra nel nostro<br><a href="https://discord.strangemc.it">Server Discord</a> per maggiori informazioni.`,
+                    'Ho Capito',
+                    'Indietro'
                 )
                 setOverlayHandler(() => {
                     toggleLaunchArea(false)
@@ -456,7 +456,7 @@ async function dlAsync(login = true) {
 
     const loggerLaunchSuite = LoggerUtil.getLogger('LaunchSuite')
 
-    setLaunchDetails('Loading server information..')
+    setLaunchDetails('Caricamento informazioni server..')
 
     let distro
 
@@ -473,12 +473,12 @@ async function dlAsync(login = true) {
 
     if(login) {
         if(ConfigManager.getSelectedAccount() == null){
-            loggerLanding.error('You must be logged into an account.')
+            loggerLanding.error('Devi prima effettuare l\'accesso.')
             return
         }
     }
 
-    setLaunchDetails('Please wait..')
+    setLaunchDetails('Attendi..')
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
@@ -503,8 +503,8 @@ async function dlAsync(login = true) {
         }
     })
 
-    loggerLaunchSuite.info('Validating files.')
-    setLaunchDetails('Validating file integrity..')
+    loggerLaunchSuite.info('Verifica File.')
+    setLaunchDetails('Verifica integrità file..')
     let invalidFileCount = 0
     try {
         invalidFileCount = await fullRepairModule.verifyFiles(percent => {
@@ -512,15 +512,15 @@ async function dlAsync(login = true) {
         })
         setLaunchPercentage(100)
     } catch (err) {
-        loggerLaunchSuite.error('Error during file validation.')
-        showLaunchFailure('Error During File Verification', err.displayable || 'See console (CTRL + Shift + i) for more details.')
+        loggerLaunchSuite.error('Errore di Verifica.')
+        showLaunchFailure('Errore Durante la verifica dei file', err.displayable || 'See console (CTRL + Shift + i) for more details.')
         return
     }
     
 
     if(invalidFileCount > 0) {
-        loggerLaunchSuite.info('Downloading files.')
-        setLaunchDetails('Downloading files..')
+        loggerLaunchSuite.info('Scaricamento File.')
+        setLaunchDetails('Download file di gioco..')
         setLaunchPercentage(0)
         try {
             await fullRepairModule.download(percent => {
@@ -528,12 +528,12 @@ async function dlAsync(login = true) {
             })
             setDownloadPercentage(100)
         } catch(err) {
-            loggerLaunchSuite.error('Error during file download.')
-            showLaunchFailure('Error During File Download', err.displayable || 'See console (CTRL + Shift + i) for more details.')
+            loggerLaunchSuite.error('Errore di download.')
+            showLaunchFailure('Error Durante il Download dei File', err.displayable || 'See console (CTRL + Shift + i) for more details.')
             return
         }
     } else {
-        loggerLaunchSuite.info('No invalid files, skipping download.')
+        loggerLaunchSuite.info('Nessun file corrotto, salto il download.')
     }
 
     // Remove download bar.
@@ -541,7 +541,7 @@ async function dlAsync(login = true) {
 
     fullRepairModule.destroyReceiver()
 
-    setLaunchDetails('Preparing to launch..')
+    setLaunchDetails('Preparazione all\'avvio..')
 
     const mojangIndexProcessor = new MojangIndexProcessor(
         ConfigManager.getCommonDirectory(),
@@ -559,7 +559,7 @@ async function dlAsync(login = true) {
         const authUser = ConfigManager.getSelectedAccount()
         loggerLaunchSuite.info(`Sending selected account (${authUser.displayName}) to ProcessBuilder.`)
         let pb = new ProcessBuilder(serv, versionData, forgeData, authUser, remote.app.getVersion())
-        setLaunchDetails('Launching game..')
+        setLaunchDetails('Avvio gioco..')
 
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
@@ -567,7 +567,7 @@ async function dlAsync(login = true) {
         const onLoadComplete = () => {
             toggleLaunchArea(false)
             if(hasRPC){
-                DiscordWrapper.updateDetails('Loading game..')
+                DiscordWrapper.updateDetails('Schermata di Caricamento..')
                 proc.stdout.on('data', gameStateChange)
             }
             proc.stdout.removeListener('data', tempListener)
@@ -594,9 +594,9 @@ async function dlAsync(login = true) {
         const gameStateChange = function(data){
             data = data.trim()
             if(SERVER_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Exploring the Realm!')
+                DiscordWrapper.updateDetails('Esplorando i Reami!')
             } else if(GAME_JOINED_REGEX.test(data)){
-                DiscordWrapper.updateDetails('Sailing to Westeros!')
+                DiscordWrapper.updateDetails('Giocando su StrangeMC!')
             }
         }
 
@@ -616,7 +616,7 @@ async function dlAsync(login = true) {
             proc.stdout.on('data', tempListener)
             proc.stderr.on('data', gameErrorListener)
 
-            setLaunchDetails('Done. Enjoy the server!')
+            setLaunchDetails('Avviato. Buon Divertimento!')
 
             // Init Discord Hook
             if(distro.rawDistribution.discord != null && serv.rawServerdiscord != null){
@@ -740,7 +740,7 @@ let newsLoadingListener = null
  */
 function setNewsLoading(val){
     if(val){
-        const nLStr = 'Checking for News'
+        const nLStr = 'Controllo le Notizie'
         let dotStr = '..'
         nELoadSpan.innerHTML = nLStr + dotStr
         newsLoadingListener = setInterval(() => {
